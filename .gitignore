@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+target/
+
+# Build outputs
+dist/
+build/
+*.jar
+*.class
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.mvn/
+mvnw
+mvnw.cmd
+
+# Environment & secrets
+.env
+.env.local
+*.env
+
+# Spring config files with secrets
+application-prod.properties
+application-secret.properties
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Test artifacts
+.pytest_cache/
+__pycache__/ 
