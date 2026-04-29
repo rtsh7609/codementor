@@ -63,14 +63,11 @@ function ReviewPage() {
   const fixedCode = useMemo(() => {
     if (!submission || !parsedReview) return ''
     let code = submission.code
-    const failedIndices = []
 
     parsedReview.suggestions?.forEach((sug, idx) => {
       if (appliedFixes.has(idx) && sug.current && sug.suggested) {
         if (code.includes(sug.current)) {
           code = code.replace(sug.current, sug.suggested)
-        } else {
-          failedIndices.push(idx)
         }
       }
     })
@@ -83,12 +80,10 @@ function ReviewPage() {
     const isApplied = appliedFixes.has(idx)
 
     if (!isApplied) {
-      // Try to apply: check if the snippet is in the current fixed code
       if (!sug.current || !sug.suggested) {
         showNotice("This suggestion doesn't have an exact code replacement.")
         return
       }
-      // Check against the original code (since we apply from scratch every time)
       if (!submission.code.includes(sug.current)) {
         showNotice(
           "Couldn't apply automatically — Gemini's snippet doesn't exactly match the original. You can copy the suggested code manually."
@@ -97,7 +92,6 @@ function ReviewPage() {
       }
     }
 
-    // Toggle
     setAppliedFixes((prev) => {
       const next = new Set(prev)
       if (next.has(idx)) next.delete(idx)
@@ -196,7 +190,7 @@ function ReviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white">
+      <div className="min-h-screen bg-zinc-950 text-white animate-fade-in">
         <Header />
         <main className="max-w-6xl mx-auto px-6 py-20 text-center">
           <Loader2 size={32} className="animate-spin mx-auto text-emerald-400 mb-4" />
@@ -208,7 +202,7 @@ function ReviewPage() {
 
   if (error || !submission) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white">
+      <div className="min-h-screen bg-zinc-950 text-white animate-fade-in">
         <Header />
         <main className="max-w-6xl mx-auto px-6 py-8">
           <div className="bg-red-900/30 border border-red-800 text-red-400 rounded-xl p-6">
@@ -222,12 +216,12 @@ function ReviewPage() {
   const hasAppliedFixes = appliedFixes.size > 0
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-zinc-950 text-white animate-fade-in">
       <Header />
 
       {/* Floating notice */}
       {notice && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-sm shadow-lg z-50">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-sm shadow-lg z-50 animate-slide-in-top">
           {notice}
         </div>
       )}
@@ -252,14 +246,14 @@ function ReviewPage() {
         </div>
 
         {!review && (
-  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
-    <Loader2 size={32} className="mx-auto text-zinc-600 mb-3" />
-    <p className="text-zinc-400 mb-1">No AI review for this submission</p>
-    <p className="text-zinc-500 text-sm">
-      This submission was created without triggering a review (e.g. via API directly).
-    </p>
-  </div>
-)}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
+            <Loader2 size={32} className="mx-auto text-zinc-600 mb-3" />
+            <p className="text-zinc-400 mb-1">No AI review for this submission</p>
+            <p className="text-zinc-500 text-sm">
+              This submission was created without triggering a review (e.g. via API directly).
+            </p>
+          </div>
+        )}
 
         {review && !parsedReview && (
           <div className="bg-yellow-900/30 border border-yellow-800 text-yellow-400 rounded-xl p-6 mb-6">
@@ -278,7 +272,7 @@ function ReviewPage() {
                 <div
                   className={`flex flex-col items-center justify-center w-28 h-28 rounded-full border-2 ${getScoreColor(
                     parsedReview.overall_score
-                  )} flex-shrink-0`}
+                  )} flex-shrink-0 animate-scale-in`}
                 >
                   <span className="text-3xl font-bold">{parsedReview.overall_score}</span>
                   <span className="text-xs uppercase tracking-wider opacity-70">Score</span>
@@ -292,7 +286,7 @@ function ReviewPage() {
 
             {/* Bugs */}
             {parsedReview.bugs && parsedReview.bugs.length > 0 && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-slide-up stagger-1">
                 <div className="flex items-center gap-2 mb-4">
                   <AlertTriangle size={20} className="text-red-400" />
                   <h2 className="text-lg font-semibold">
@@ -323,7 +317,7 @@ function ReviewPage() {
 
             {/* Suggestions with Apply/Revert */}
             {parsedReview.suggestions && parsedReview.suggestions.length > 0 && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-slide-up stagger-2">
                 <div className="flex items-center gap-2 mb-4">
                   <Lightbulb size={20} className="text-cyan-400" />
                   <h2 className="text-lg font-semibold">
@@ -414,7 +408,7 @@ function ReviewPage() {
 
             {/* Complexity */}
             {parsedReview.complexity && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-slide-up stagger-3">
                 <div className="flex items-center gap-2 mb-4">
                   <Activity size={20} className="text-purple-400" />
                   <h2 className="text-lg font-semibold">Complexity Analysis</h2>
@@ -437,7 +431,7 @@ function ReviewPage() {
 
             {/* Best practices */}
             {parsedReview.best_practices && parsedReview.best_practices.length > 0 && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-slide-up stagger-4">
                 <div className="flex items-center gap-2 mb-4">
                   <CheckCircle2 size={20} className="text-emerald-400" />
                   <h2 className="text-lg font-semibold">Best Practices</h2>
@@ -456,55 +450,57 @@ function ReviewPage() {
         )}
 
         {/* Side-by-side diff */}
-        <div className="mt-6 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="px-6 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-semibold">Code Comparison</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                {hasAppliedFixes
-                  ? `${appliedFixes.size} fix${appliedFixes.size > 1 ? 'es' : ''} applied`
-                  : 'Apply suggestions above to see changes'}
-              </p>
+        {review && (
+          <div className="mt-6 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden animate-slide-up stagger-5">
+            <div className="px-6 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold">Code Comparison</h2>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  {hasAppliedFixes
+                    ? `${appliedFixes.size} fix${appliedFixes.size > 1 ? 'es' : ''} applied`
+                    : 'Apply suggestions above to see changes'}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={copyFixedCode}
+                  disabled={!hasAppliedFixes}
+                  className="flex items-center gap-2 text-sm bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 disabled:text-zinc-600 disabled:cursor-not-allowed text-zinc-300 px-3 py-1.5 rounded-lg transition"
+                >
+                  <Copy size={14} /> Copy
+                </button>
+                <button
+                  onClick={downloadFixedCode}
+                  disabled={!hasAppliedFixes}
+                  className="flex items-center gap-2 text-sm bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed text-zinc-950 font-medium px-3 py-1.5 rounded-lg transition"
+                >
+                  <Download size={14} /> Download
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={copyFixedCode}
-                disabled={!hasAppliedFixes}
-                className="flex items-center gap-2 text-sm bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 disabled:text-zinc-600 disabled:cursor-not-allowed text-zinc-300 px-3 py-1.5 rounded-lg transition"
-              >
-                <Copy size={14} /> Copy
-              </button>
-              <button
-                onClick={downloadFixedCode}
-                disabled={!hasAppliedFixes}
-                className="flex items-center gap-2 text-sm bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed text-zinc-950 font-medium px-3 py-1.5 rounded-lg transition"
-              >
-                <Download size={14} /> Download
-              </button>
+            <div className="grid grid-cols-2 text-xs px-6 py-2 bg-zinc-950/50 border-b border-zinc-800 font-mono uppercase tracking-wider text-zinc-500">
+              <div>Original</div>
+              <div>Fixed</div>
             </div>
+            <DiffEditor
+              height="500px"
+              language={submission.language}
+              original={submission.code}
+              modified={fixedCode}
+              theme="vs-dark"
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                lineNumbers: 'on',
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                wordWrap: 'on',
+                renderSideBySide: true,
+              }}
+            />
           </div>
-          <div className="grid grid-cols-2 text-xs px-6 py-2 bg-zinc-950/50 border-b border-zinc-800 font-mono uppercase tracking-wider text-zinc-500">
-            <div>Original</div>
-            <div>Fixed</div>
-          </div>
-          <DiffEditor
-            height="500px"
-            language={submission.language}
-            original={submission.code}
-            modified={fixedCode}
-            theme="vs-dark"
-            options={{
-              readOnly: true,
-              minimap: { enabled: false },
-              fontSize: 14,
-              lineNumbers: 'on',
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              wordWrap: 'on',
-              renderSideBySide: true,
-            }}
-          />
-        </div>
+        )}
       </main>
     </div>
   )

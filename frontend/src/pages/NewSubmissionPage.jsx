@@ -39,7 +39,6 @@ function NewSubmissionPage() {
 
   const handleLanguageChange = (newLang) => {
     setLanguage(newLang)
-    // Replace boilerplate only if user hasn't customized it much
     if (Object.values(DEFAULT_CODE).includes(code)) {
       setCode(DEFAULT_CODE[newLang])
     }
@@ -60,18 +59,13 @@ function NewSubmissionPage() {
 
     setLoading(true)
     try {
-      // 1. Save the submission
       const submitRes = await api.post('/api/submissions', {
         title: title.trim(),
         language,
         code,
       })
       const submissionId = submitRes.data.id
-
-      // 2. Trigger the AI review (this can take 5-15 seconds)
       await api.post(`/api/reviews/submission/${submissionId}`)
-
-      // 3. Navigate to the review page
       navigate(`/review/${submissionId}`)
     } catch (err) {
       const errorMessage =
@@ -83,7 +77,7 @@ function NewSubmissionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-zinc-950 text-white animate-fade-in">
       <Header />
 
       <main className="max-w-5xl mx-auto px-6 py-8">
@@ -103,7 +97,7 @@ function NewSubmissionPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title input */}
-          <div>
+          <div className="animate-slide-up stagger-1">
             <label className="block text-sm font-medium text-zinc-300 mb-2">
               Title
             </label>
@@ -118,7 +112,7 @@ function NewSubmissionPage() {
           </div>
 
           {/* Language dropdown */}
-          <div>
+          <div className="animate-slide-up stagger-2">
             <label className="block text-sm font-medium text-zinc-300 mb-2">
               Language
             </label>
@@ -136,7 +130,7 @@ function NewSubmissionPage() {
           </div>
 
           {/* Monaco Editor */}
-          <div>
+          <div className="animate-slide-up stagger-3">
             <label className="block text-sm font-medium text-zinc-300 mb-2">
               Code
             </label>
@@ -162,24 +156,24 @@ function NewSubmissionPage() {
 
           {/* Error */}
           {error && (
-            <div className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2.5">
+            <div className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2.5 animate-slide-in-top">
               {error}
             </div>
           )}
 
           {/* Submit button */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2 animate-slide-up stagger-4">
             <p className="text-xs text-zinc-500">
               {loading
                 ? 'Sending your code to Gemini... this can take up to 15 seconds.'
-                : 'You\'ll be redirected to the review page after submitting.'}
+                : "You'll be redirected to the review page after submitting."}
             </p>
             <button
               type="submit"
               disabled={loading}
               className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-zinc-700 disabled:cursor-not-allowed text-zinc-950 font-semibold px-6 py-2.5 rounded-lg transition"
             >
-              <Sparkles size={18} />
+              <Sparkles size={18} className={loading ? 'animate-soft-pulse' : ''} />
               {loading ? 'Reviewing...' : 'Get AI Review'}
             </button>
           </div>

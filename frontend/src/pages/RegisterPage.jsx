@@ -44,14 +44,14 @@ function RegisterPage() {
   const inputClass = 'w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition'
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-4 animate-fade-in">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-slide-up stagger-1">
           <h1 className="text-4xl font-bold text-emerald-400 mb-2">CodeMentor</h1>
           <p className="text-zinc-400 text-sm">AI-powered code review platform</p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl animate-slide-up stagger-2">
           <h2 className="text-2xl font-semibold mb-6">Create your account</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -103,7 +103,7 @@ function RegisterPage() {
             </div>
 
             {error && (
-              <div className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2.5">
+              <div className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2.5 animate-slide-in-top">
                 {error}
               </div>
             )}

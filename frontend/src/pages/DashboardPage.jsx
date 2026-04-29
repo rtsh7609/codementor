@@ -67,7 +67,7 @@ function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-zinc-950 text-white animate-fade-in">
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -89,7 +89,7 @@ function DashboardPage() {
 
         {/* Search + Filter bar — only shows when there are submissions */}
         {!loading && !error && submissions.length > 0 && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-6">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-6 animate-slide-up">
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search input */}
               <div className="relative flex-1">
@@ -158,7 +158,7 @@ function DashboardPage() {
         )}
 
         {loading && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center animate-soft-pulse">
             <p className="text-zinc-400">Loading...</p>
           </div>
         )}
@@ -171,7 +171,7 @@ function DashboardPage() {
 
         {/* Empty state — no submissions at all */}
         {!loading && !error && submissions.length === 0 && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center animate-fade-in">
             <FileCode size={48} className="mx-auto text-zinc-600 mb-4" />
             <h3 className="text-lg font-semibold mb-1">No submissions yet</h3>
             <p className="text-zinc-400 text-sm mb-6">
@@ -191,7 +191,7 @@ function DashboardPage() {
         {!loading &&
           submissions.length > 0 &&
           filteredSubmissions.length === 0 && (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center animate-fade-in">
               <Search size={48} className="mx-auto text-zinc-600 mb-4" />
               <h3 className="text-lg font-semibold mb-1">No matches found</h3>
               <p className="text-zinc-400 text-sm mb-6">
@@ -206,14 +206,14 @@ function DashboardPage() {
             </div>
           )}
 
-        {/* Submissions list */}
+        {/* Submissions list — staggered cascade */}
         {!loading && filteredSubmissions.length > 0 && (
           <div className="grid gap-3">
-            {filteredSubmissions.map((submission) => (
+            {filteredSubmissions.map((submission, idx) => (
               <Link
                 key={submission.id}
                 to={`/review/${submission.id}`}
-                className="bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:bg-zinc-800/50 rounded-xl p-5 transition group"
+                className={`bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:bg-zinc-800/50 rounded-xl p-5 group card-lift animate-slide-up stagger-${Math.min(idx + 1, 6)}`}
               >
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-emerald-400 transition truncate">
                   {submission.title}
